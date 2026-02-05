@@ -1,13 +1,28 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useSyncExternalStore } from 'react'
 
 const LOCAL_KEY = 'easystudy-onboarding'
 const PREFS_KEY = 'easystudy-user-prefs'
 
-function getOnboardingState() {
+// Shared listeners for cross-component sync
+let listeners = []
+
+function emitChange() {
+  listeners.forEach(listener => listener())
+}
+
+function subscribe(listener) {
+  listeners.push(listener)
+  return () => {
+    listeners = listeners.filter(l => l !== listener)
+  }
+}
+
+function getOnboardingSnapshot() {
   try {
-    return JSON.parse(localStorage.getItem(LOCAL_KEY)) || { completed: false, step: 0 }
+    const data = localStorage.getItem(LOCAL_KEY)
+    return data || JSON.stringify({ completed: false, step: 0 })
   } catch {
-    return { completed: false, step: 0 }
+    return JSON.stringify({ completed: false, step: 0 })
   }
 }
 
@@ -20,27 +35,29 @@ function getUserPrefs() {
 }
 
 export function useOnboarding() {
-  const [state, setState] = useState(getOnboardingState)
+  // Use useSyncExternalStore for cross-component reactivity
+  const stateJson = useSyncExternalStore(subscribe, getOnboardingSnapshot, getOnboardingSnapshot)
+  const state = JSON.parse(stateJson)
+
   const [prefs, setPrefs] = useState(getUserPrefs)
 
   const setStep = useCallback((step) => {
-    setState(prev => {
-      const updated = { ...prev, step }
-      localStorage.setItem(LOCAL_KEY, JSON.stringify(updated))
-      return updated
-    })
+    const current = JSON.parse(getOnboardingSnapshot())
+    const updated = { ...current, step }
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(updated))
+    emitChange()
   }, [])
 
   const completeOnboarding = useCallback(() => {
     const updated = { completed: true, step: -1 }
     localStorage.setItem(LOCAL_KEY, JSON.stringify(updated))
-    setState(updated)
+    emitChange()
   }, [])
 
   const resetOnboarding = useCallback(() => {
     const updated = { completed: false, step: 0 }
     localStorage.setItem(LOCAL_KEY, JSON.stringify(updated))
-    setState(updated)
+    emitChange()
   }, [])
 
   const updatePrefs = useCallback((updates) => {
