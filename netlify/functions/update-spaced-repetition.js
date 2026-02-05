@@ -48,33 +48,41 @@ function getDatePlusDays(days) {
   return date.toISOString().split('T')[0]
 }
 
-export default async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('', {
-      status: 204,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      },
-    })
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
+
+const JSON_HEADERS = {
+  ...CORS_HEADERS,
+  'Content-Type': 'application/json',
+}
+
+function jsonResponse(statusCode, data) {
+  return { statusCode, headers: JSON_HEADERS, body: JSON.stringify(data) }
+}
+
+export const handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 204, headers: CORS_HEADERS, body: '' }
   }
 
-  if (req.method !== 'POST') {
-    return Response.json({ error: 'Method not allowed' }, { status: 405 })
+  if (event.httpMethod !== 'POST') {
+    return jsonResponse(405, { error: 'Method not allowed' })
   }
 
   let body
   try {
-    body = await req.json()
+    body = JSON.parse(event.body)
   } catch {
-    return Response.json({ error: 'Invalid JSON body' }, { status: 400 })
+    return jsonResponse(400, { error: 'Invalid JSON body' })
   }
 
   const { items } = body
 
   if (!items || !Array.isArray(items)) {
-    return Response.json({ error: 'Items array is required' }, { status: 400 })
+    return jsonResponse(400, { error: 'Items array is required' })
   }
 
   const results = items.map(item => {
@@ -85,9 +93,5 @@ export default async (req) => {
     }
   })
 
-  return Response.json({ results })
-}
-
-export const config = {
-  path: '/.netlify/functions/update-spaced-repetition',
+  return jsonResponse(200, { results })
 }

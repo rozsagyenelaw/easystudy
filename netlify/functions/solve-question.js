@@ -3,11 +3,11 @@ const rateLimits = new Map()
 const RATE_LIMIT = 30
 const RATE_WINDOW_MS = 60 * 60 * 1000 // 1 hour
 
-function getRateLimitKey(event) {
-  const uid = event.headers['x-firebase-uid']
+function getRateLimitKey(headers) {
+  const uid = headers['x-firebase-uid']
   if (uid) return `uid:${uid}`
-  const ip = event.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
-    event.headers['client-ip'] || 'unknown'
+  const ip = headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+    headers['client-ip'] || 'unknown'
   return `ip:${ip}`
 }
 
@@ -29,6 +29,21 @@ function checkRateLimit(key) {
   }
 
   return { allowed: true }
+}
+
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type, X-Firebase-UID',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
+
+const JSON_HEADERS = {
+  ...CORS_HEADERS,
+  'Content-Type': 'application/json',
+}
+
+function jsonResponse(statusCode, data) {
+  return { statusCode, headers: JSON_HEADERS, body: JSON.stringify(data) }
 }
 
 const SYSTEM_PROMPT = `You are an expert tutor helping students understand academic topics step by step. You MUST return valid JSON (no markdown code fences, no extra text — only the JSON object).
@@ -82,48 +97,38 @@ const FOLLOW_UP_SYSTEM = `You are an expert tutor. A student wants a deeper expl
   "intuition": "Why this step works — the underlying intuition"
 }`
 
-export default async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('', {
-      status: 204,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type, X-Firebase-UID',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      },
-    })
+export const handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 204, headers: CORS_HEADERS, body: '' }
   }
 
-  if (req.method !== 'POST') {
-    return Response.json({ error: 'Method not allowed' }, { status: 405 })
+  if (event.httpMethod !== 'POST') {
+    return jsonResponse(405, { error: 'Method not allowed' })
   }
 
-  const rateLimitKey = getRateLimitKey({ headers: Object.fromEntries(req.headers) })
+  const rateLimitKey = getRateLimitKey(event.headers)
   const { allowed, remaining } = checkRateLimit(rateLimitKey)
 
   if (!allowed) {
-    return Response.json(
-      { error: `Rate limit exceeded. Try again in ${remaining} minutes.` },
-      { status: 429 }
-    )
+    return jsonResponse(429, { error: `Rate limit exceeded. Try again in ${remaining} minutes.` })
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) {
-    return Response.json({ error: 'API key not configured' }, { status: 500 })
+    return jsonResponse(500, { error: 'API key not configured' })
   }
 
   let body
   try {
-    body = await req.json()
+    body = JSON.parse(event.body)
   } catch {
-    return Response.json({ error: 'Invalid JSON body' }, { status: 400 })
+    return jsonResponse(400, { error: 'Invalid JSON body' })
   }
 
   const { question, subject, depth = 'standard', followUpStepIndex } = body
 
   if (!question || typeof question !== 'string' || question.trim().length === 0) {
-    return Response.json({ error: 'Question is required' }, { status: 400 })
+    return jsonResponse(400, { error: 'Question is required' })
   }
 
   const isFollowUp = followUpStepIndex !== undefined && followUpStepIndex !== null
@@ -157,20 +162,14 @@ export default async (req) => {
     if (!response.ok) {
       const err = await response.text()
       console.error('Anthropic API error:', err)
-      return Response.json(
-        { error: 'Failed to generate solution. Please try again.' },
-        { status: 502 }
-      )
+      return jsonResponse(502, { error: 'Failed to generate solution. Please try again.' })
     }
 
     const data = await response.json()
     const text = data.content?.[0]?.text
 
     if (!text) {
-      return Response.json(
-        { error: 'Empty response from AI. Try rephrasing your question.' },
-        { status: 502 }
-      )
+      return jsonResponse(502, { error: 'Empty response from AI. Try rephrasing your question.' })
     }
 
     // Parse the JSON response from Claude
@@ -180,22 +179,12 @@ export default async (req) => {
       const cleaned = text.replace(/^```json\s*\n?/, '').replace(/\n?```\s*$/, '').trim()
       parsed = JSON.parse(cleaned)
     } catch {
-      return Response.json(
-        { error: 'Could not parse AI response. Try rephrasing your question.' },
-        { status: 502 }
-      )
+      return jsonResponse(502, { error: 'Could not parse AI response. Try rephrasing your question.' })
     }
 
-    return Response.json(parsed)
+    return jsonResponse(200, parsed)
   } catch (err) {
     console.error('Function error:', err)
-    return Response.json(
-      { error: 'Network error. Please check your connection and try again.' },
-      { status: 500 }
-    )
+    return jsonResponse(500, { error: 'Network error. Please check your connection and try again.' })
   }
-}
-
-export const config = {
-  path: '/.netlify/functions/solve-question',
 }
