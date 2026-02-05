@@ -11,6 +11,14 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
-const app = initializeApp(firebaseConfig)
-export const auth = getAuth(app)
-export const db = getFirestore(app)
+let app, auth, db
+
+if (firebaseConfig.apiKey) {
+  app = initializeApp(firebaseConfig)
+  auth = getAuth(app)
+  db = getFirestore(app)
+} else {
+  console.warn('Firebase config missing — running in guest-only mode. Create a .env file with your Firebase credentials.')
+}
+
+export { auth, db }

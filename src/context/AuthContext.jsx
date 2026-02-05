@@ -19,6 +19,11 @@ export function AuthProvider({ children }) {
   const [isGuest, setIsGuest] = useState(false)
 
   useEffect(() => {
+    if (!auth) {
+      setIsGuest(true)
+      setLoading(false)
+      return
+    }
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser)
       setIsGuest(!firebaseUser)
