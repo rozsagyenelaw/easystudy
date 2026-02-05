@@ -7,8 +7,11 @@ import Footer from './components/Layout/Footer'
 import InstallBanner from './components/Layout/InstallBanner'
 import WelcomeModal from './components/Layout/WelcomeModal'
 import LoadingSpinner from './components/Common/LoadingSpinner'
+import ErrorBoundary from './components/Common/ErrorBoundary'
 import AchievementToast from './components/Common/AchievementToast'
+import OfflineBanner from './components/Offline/OfflineBanner'
 import { useAchievements } from './hooks/useAchievements'
+import { useOnboarding } from './hooks/useOnboarding'
 
 const Home = lazy(() => import('./pages/Home'))
 const AskQuestion = lazy(() => import('./pages/AskQuestion'))
@@ -23,13 +26,30 @@ const SharedSolution = lazy(() => import('./pages/SharedSolution'))
 const Progress = lazy(() => import('./pages/Progress'))
 const StudyPlan = lazy(() => import('./pages/StudyPlan'))
 const Profile = lazy(() => import('./pages/Profile'))
+const Onboarding = lazy(() => import('./pages/Onboarding'))
+const SubjectBrowser = lazy(() => import('./pages/SubjectBrowser'))
+const TopicDetail = lazy(() => import('./pages/TopicDetail'))
 
 function AppContent() {
   const { newAchievement, dismissNewAchievement } = useAchievements()
+  const { shouldShowOnboarding } = useOnboarding()
+
+  if (shouldShowOnboarding) {
+    return (
+      <BrowserRouter>
+        <div className="min-h-screen bg-warm-white dark:bg-navy text-stone-800 dark:text-slate-200 transition-colors duration-300">
+          <Suspense fallback={<div className="py-20"><LoadingSpinner message="" /></div>}>
+            <Onboarding />
+          </Suspense>
+        </div>
+      </BrowserRouter>
+    )
+  }
 
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-warm-white dark:bg-navy text-stone-800 dark:text-slate-200 transition-colors duration-300">
+        <OfflineBanner />
         <Navbar />
         <main className="min-h-[calc(100vh-3.5rem)]">
           <Suspense fallback={<div className="py-20"><LoadingSpinner message="" /></div>}>
@@ -47,6 +67,9 @@ function AppContent() {
               <Route path="/progress" element={<Progress />} />
               <Route path="/study-plan" element={<StudyPlan />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/topics" element={<SubjectBrowser />} />
+              <Route path="/topics/:subjectId" element={<SubjectBrowser />} />
+              <Route path="/topics/:subjectId/:topicId/:subtopicId" element={<TopicDetail />} />
             </Routes>
           </Suspense>
         </main>
@@ -61,10 +84,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   )
 }

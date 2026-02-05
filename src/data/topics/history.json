@@ -1,0 +1,123 @@
+{
+  "subject": "History",
+  "icon": "📜",
+  "topics": [
+    {
+      "id": "ancient",
+      "name": "Ancient Civilizations",
+      "subtopics": [
+        {
+          "id": "mesopotamia-egypt",
+          "name": "Mesopotamia & Egypt",
+          "theory": "Mesopotamia (modern-day Iraq) is considered the 'cradle of civilization.' The Sumerians developed cuneiform writing, the wheel, and the first legal code (Code of Hammurabi, c. 1754 BCE).\n\nAncient Egypt flourished along the Nile River. The pharaohs built pyramids, developed hieroglyphics, and created a sophisticated society lasting over 3,000 years. Key periods: Old Kingdom (pyramids), Middle Kingdom (expansion), New Kingdom (Tutankhamun, Ramesses II).\n\nBoth civilizations developed irrigation, mathematics, astronomy, and complex religious systems.",
+          "examples": [
+            {
+              "question": "Why were rivers crucial for early civilizations?",
+              "steps": [
+                { "title": "Agriculture", "explanation": "Rivers provided water for irrigation and fertile flood plains" },
+                { "title": "Transportation", "explanation": "Rivers served as trade and transport routes" },
+                { "title": "Settlement", "explanation": "Reliable water sources allowed permanent settlements" }
+              ],
+              "answer": "Rivers provided water for agriculture, transportation for trade, and resources that enabled permanent settlements and population growth."
+            }
+          ],
+          "relatedTopics": ["greece-rome"]
+        }
+      ]
+    },
+    {
+      "id": "classical",
+      "name": "Classical Period",
+      "subtopics": [
+        {
+          "id": "greece-rome",
+          "name": "Greece & Rome",
+          "theory": "Ancient Greece (c. 800–146 BCE) developed democracy, philosophy (Socrates, Plato, Aristotle), theater, and the Olympic Games. Athens and Sparta represented different models of city-states.\n\nThe Roman Republic (509–27 BCE) created representative government, law codes, and engineering marvels. The Roman Empire (27 BCE–476 CE) unified much of Europe, North Africa, and the Middle East.\n\nRoman contributions include roads, aqueducts, concrete, the Latin language (basis for Romance languages), and legal principles still used today.",
+          "examples": [
+            {
+              "question": "Compare Athenian democracy to the Roman Republic's government.",
+              "steps": [
+                { "title": "Athens: Direct democracy", "explanation": "Citizens voted directly on laws in the Assembly. Limited to free adult males." },
+                { "title": "Rome: Representative republic", "explanation": "Citizens elected representatives (senators, consuls) to govern on their behalf." },
+                { "title": "Key difference", "explanation": "Athens: citizens vote on laws directly. Rome: elected officials make laws." }
+              ],
+              "answer": "Athens practiced direct democracy (citizens voted on laws), while Rome used a representative republic (elected officials governed). Both excluded women, slaves, and foreigners."
+            }
+          ],
+          "relatedTopics": ["mesopotamia-egypt", "renaissance"]
+        }
+      ]
+    },
+    {
+      "id": "modern-early",
+      "name": "Early Modern Period",
+      "subtopics": [
+        {
+          "id": "renaissance",
+          "name": "Renaissance & Reformation",
+          "theory": "The Renaissance (14th–17th century) was a cultural rebirth centered in Italy. It emphasized humanism, art, science, and classical learning.\n\nKey figures: Leonardo da Vinci, Michelangelo, Galileo, Copernicus. The printing press (Gutenberg, c. 1440) revolutionized information spread.\n\nThe Protestant Reformation (1517) began when Martin Luther challenged Catholic practices. This led to new Christian denominations and religious wars, fundamentally reshaping European politics.",
+          "examples": [
+            {
+              "question": "How did the printing press impact the Reformation?",
+              "steps": [
+                { "title": "Speed of information", "explanation": "Luther's 95 Theses spread across Europe in weeks, not years" },
+                { "title": "Accessibility", "explanation": "Bibles and pamphlets became affordable, enabling personal interpretation" },
+                { "title": "Impact", "explanation": "The Church could no longer control information flow, enabling reform movements" }
+              ],
+              "answer": "The printing press enabled rapid dissemination of reformist ideas, making the Bible accessible to laypeople and undermining the Church's monopoly on religious interpretation."
+            }
+          ],
+          "relatedTopics": ["greece-rome", "revolutions"]
+        }
+      ]
+    },
+    {
+      "id": "modern",
+      "name": "Modern History",
+      "subtopics": [
+        {
+          "id": "revolutions",
+          "name": "Age of Revolutions",
+          "theory": "The late 18th and 19th centuries saw transformative revolutions driven by Enlightenment ideals of liberty, equality, and popular sovereignty.\n\nThe American Revolution (1775–1783) established the first modern democratic republic. The French Revolution (1789–1799) overthrew the monarchy and declared the Rights of Man.\n\nThe Industrial Revolution (c. 1760–1840) transformed economies from agricultural to industrial, beginning in Britain. It brought urbanization, new technologies (steam engine, factories), and social changes including a growing middle class and labor movements.",
+          "examples": [
+            {
+              "question": "What were the main causes of the French Revolution?",
+              "steps": [
+                { "title": "Social inequality", "explanation": "The Three Estates system: clergy and nobility had privileges while the Third Estate (97%) bore most taxes" },
+                { "title": "Financial crisis", "explanation": "France was bankrupt from wars (including supporting the American Revolution)" },
+                { "title": "Enlightenment ideas", "explanation": "Philosophers like Rousseau and Voltaire inspired demands for rights and liberty" },
+                { "title": "Food shortages", "explanation": "Poor harvests led to bread shortages and popular anger" }
+              ],
+              "answer": "Social inequality, financial crisis, Enlightenment ideas, and food shortages combined to spark the French Revolution in 1789."
+            }
+          ],
+          "relatedTopics": ["renaissance", "world-wars"]
+        }
+      ]
+    },
+    {
+      "id": "contemporary",
+      "name": "Contemporary History",
+      "subtopics": [
+        {
+          "id": "world-wars",
+          "name": "World Wars",
+          "theory": "World War I (1914–1918) was triggered by the assassination of Archduke Franz Ferdinand, but underlying causes included militarism, alliances, imperialism, and nationalism (MAIN). Trench warfare and new weapons made it devastating.\n\nWorld War II (1939–1945) began with Nazi Germany's aggression. The Holocaust murdered six million Jews and millions of others. The war ended with atomic bombs on Hiroshima and Nagasaki.\n\nConsequences: the United Nations was established, the Cold War began between the US and USSR, and decolonization accelerated across Asia and Africa.",
+          "examples": [
+            {
+              "question": "What were the MAIN causes of World War I?",
+              "steps": [
+                { "title": "M – Militarism", "explanation": "European powers built massive armies and navies, creating an arms race" },
+                { "title": "A – Alliances", "explanation": "Complex alliance systems meant one conflict could drag in many nations" },
+                { "title": "I – Imperialism", "explanation": "Competition for colonies created rivalries" },
+                { "title": "N – Nationalism", "explanation": "Ethnic nationalism, especially in the Balkans, fueled tensions" }
+              ],
+              "answer": "Militarism, Alliances, Imperialism, and Nationalism (MAIN) were the underlying causes, with the assassination of Archduke Franz Ferdinand as the trigger."
+            }
+          ],
+          "relatedTopics": ["revolutions"]
+        }
+      ]
+    }
+  ]
+}

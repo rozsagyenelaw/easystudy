@@ -13,6 +13,7 @@ export default defineConfig({
           'vendor-motion': ['framer-motion'],
           'vendor-katex': ['katex'],
           'vendor-recharts': ['recharts'],
+          'vendor-i18n': ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
         },
       },
     },
@@ -49,7 +50,9 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,json}'],
+        navigateFallback: '/index.html',
+        navigateFallbackAllowlist: [/^(?!\/__).*/],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -70,12 +73,22 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /\/\.netlify\/functions\/solve-question/,
+            urlPattern: /^https:\/\/ui-avatars\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'avatar-cache',
+              expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            urlPattern: /\/\.netlify\/functions\/.*/,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
               expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 },
               cacheableResponse: { statuses: [0, 200] },
+              networkTimeoutSeconds: 10,
             },
           },
         ],

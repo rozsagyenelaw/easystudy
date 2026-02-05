@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { useTheme } from '../hooks/useTheme'
 import { useAuth } from '../hooks/useAuth'
 import { useStreaks } from '../hooks/useStreaks'
 import { useNotifications } from '../hooks/useNotifications'
+import { useLanguage } from '../hooks/useLanguage'
+import { useOnboarding } from '../hooks/useOnboarding'
 import ThemeToggle from '../components/Layout/ThemeToggle'
+import TopicPackDownloader from '../components/Offline/TopicPackDownloader'
 
 const DEPTH_OPTIONS = [
   { value: 'basic', label: 'Basic' },
@@ -16,10 +20,13 @@ const DEPTH_OPTIONS = [
 const GOAL_OPTIONS = [10, 15, 20, 30, 45, 60]
 
 export default function Settings() {
+  const { t } = useTranslation()
   const { isDark } = useTheme()
   const { user, logout } = useAuth()
   const { dailyGoalMinutes, setDailyGoal } = useStreaks()
   const { settings: notifSettings, permission, requestPermission, updateSettings, isSupported } = useNotifications()
+  const { languages, currentLanguage, setLanguage } = useLanguage()
+  const { resetOnboarding } = useOnboarding()
   const [defaultDepth, setDefaultDepth] = useState(
     () => localStorage.getItem('easystudy-default-depth') || 'standard'
   )
@@ -50,7 +57,7 @@ export default function Settings() {
       className="max-w-2xl mx-auto px-4 py-8 pb-24"
     >
       <h1 className={`font-heading font-bold text-2xl mb-8 ${isDark ? 'text-white' : 'text-navy'}`}>
-        Settings
+        {t('settings.title')}
       </h1>
 
       <div className="space-y-6">
@@ -58,7 +65,7 @@ export default function Settings() {
         {user && (
           <section className={`rounded-2xl p-5 border ${isDark ? 'bg-navy-light border-slate-700' : 'bg-white border-stone-200'}`}>
             <h2 className={`font-heading font-semibold text-base mb-4 ${isDark ? 'text-white' : 'text-navy'}`}>
-              Account
+              {t('settings.account')}
             </h2>
             <div className="flex items-center gap-3 mb-4">
               <img
@@ -84,7 +91,7 @@ export default function Settings() {
                     : 'text-accent hover:bg-blue-50'
                 }`}
               >
-                View profile
+                {t('settings.viewProfile')}
               </Link>
               <button
                 onClick={logout}
@@ -94,7 +101,7 @@ export default function Settings() {
                     : 'text-red-500 hover:bg-red-50'
                 }`}
               >
-                Sign out
+                {t('settings.signOut')}
               </button>
             </div>
           </section>
@@ -104,13 +111,13 @@ export default function Settings() {
         {!user && (
           <section className={`rounded-2xl p-5 border ${isDark ? 'bg-accent/10 border-accent/30' : 'bg-blue-50 border-accent/20'}`}>
             <h2 className={`font-heading font-semibold text-base mb-2 ${isDark ? 'text-white' : 'text-navy'}`}>
-              Create an account
+              {t('settings.createAccount')}
             </h2>
             <p className={`text-sm mb-3 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-              Sign in to sync your progress across devices and unlock all features.
+              {t('settings.createAccountMsg')}
             </p>
             <Link to="/login" className="btn-primary text-sm inline-block">
-              Sign in
+              {t('settings.signIn')}
             </Link>
           </section>
         )}
@@ -118,24 +125,49 @@ export default function Settings() {
         {/* Appearance */}
         <section className={`rounded-2xl p-5 border ${isDark ? 'bg-navy-light border-slate-700' : 'bg-white border-stone-200'}`}>
           <h2 className={`font-heading font-semibold text-base mb-4 ${isDark ? 'text-white' : 'text-navy'}`}>
-            Appearance
+            {t('settings.appearance')}
           </h2>
           <div className="flex items-center justify-between">
-            <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>Dark mode</span>
+            <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>{t('settings.darkMode')}</span>
             <ThemeToggle />
+          </div>
+        </section>
+
+        {/* Language */}
+        <section className={`rounded-2xl p-5 border ${isDark ? 'bg-navy-light border-slate-700' : 'bg-white border-stone-200'}`}>
+          <h2 className={`font-heading font-semibold text-base mb-4 ${isDark ? 'text-white' : 'text-navy'}`}>
+            {t('settings.language')}
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {languages.map(lang => (
+              <button
+                key={lang.code}
+                onClick={() => setLanguage(lang.code)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-heading font-medium transition-colors ${
+                  currentLanguage === lang.code
+                    ? 'bg-accent text-white'
+                    : isDark
+                    ? 'bg-navy-lighter text-slate-400 hover:text-slate-200'
+                    : 'bg-stone-100 text-stone-500 hover:text-stone-700'
+                }`}
+              >
+                <span>{lang.flag}</span>
+                {lang.label}
+              </button>
+            ))}
           </div>
         </section>
 
         {/* Study preferences */}
         <section className={`rounded-2xl p-5 border ${isDark ? 'bg-navy-light border-slate-700' : 'bg-white border-stone-200'}`}>
           <h2 className={`font-heading font-semibold text-base mb-4 ${isDark ? 'text-white' : 'text-navy'}`}>
-            Study Preferences
+            {t('settings.studyPrefs')}
           </h2>
 
           {/* Default depth */}
           <div className="mb-5">
             <label className={`block text-sm mb-2 ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>
-              Default explanation depth
+              {t('settings.defaultDepth')}
             </label>
             <div className={`inline-flex rounded-xl p-1 ${isDark ? 'bg-navy-lighter' : 'bg-stone-100'}`}>
               {DEPTH_OPTIONS.map(({ value, label }) => (
@@ -159,7 +191,7 @@ export default function Settings() {
           {/* Daily goal */}
           <div>
             <label className={`block text-sm mb-2 ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>
-              Daily study goal
+              {t('settings.dailyGoal')}
             </label>
             <div className="flex flex-wrap gap-2">
               {GOAL_OPTIONS.map(min => (
@@ -185,27 +217,27 @@ export default function Settings() {
         {isSupported && (
           <section className={`rounded-2xl p-5 border ${isDark ? 'bg-navy-light border-slate-700' : 'bg-white border-stone-200'}`}>
             <h2 className={`font-heading font-semibold text-base mb-4 ${isDark ? 'text-white' : 'text-navy'}`}>
-              Notifications
+              {t('settings.notifications')}
             </h2>
 
             {permission !== 'granted' ? (
               <div>
                 <p className={`text-sm mb-3 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                  Get reminders to study, streak alerts, and review notifications.
+                  {t('settings.notifMsg')}
                 </p>
                 <button
                   onClick={handleEnableNotifications}
                   className="btn-secondary text-sm"
                 >
-                  Enable notifications
+                  {t('settings.enableNotif')}
                 </button>
               </div>
             ) : (
               <div className="space-y-3">
                 {[
-                  { key: 'dailyReminder', label: 'Daily study reminder' },
-                  { key: 'streakReminder', label: 'Streak at risk alert' },
-                  { key: 'reviewReminder', label: 'Spaced repetition reminders' },
+                  { key: 'dailyReminder', label: t('settings.dailyReminder') },
+                  { key: 'streakReminder', label: t('settings.streakReminder') },
+                  { key: 'reviewReminder', label: t('settings.reviewReminder') },
                 ].map(({ key, label }) => (
                   <div key={key} className="flex items-center justify-between">
                     <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>{label}</span>
@@ -228,7 +260,7 @@ export default function Settings() {
 
                 {/* Reminder time */}
                 <div className="flex items-center justify-between">
-                  <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>Reminder time</span>
+                  <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>{t('settings.reminderTime')}</span>
                   <input
                     type="time"
                     value={notifSettings.reminderTime}
@@ -245,32 +277,52 @@ export default function Settings() {
           </section>
         )}
 
+        {/* Offline Content */}
+        <section className={`rounded-2xl p-5 border ${isDark ? 'bg-navy-light border-slate-700' : 'bg-white border-stone-200'}`}>
+          <h2 className={`font-heading font-semibold text-base mb-4 ${isDark ? 'text-white' : 'text-navy'}`}>
+            {t('settings.offline')}
+          </h2>
+          <TopicPackDownloader />
+        </section>
+
         {/* Data */}
         <section className={`rounded-2xl p-5 border ${isDark ? 'bg-navy-light border-slate-700' : 'bg-white border-stone-200'}`}>
           <h2 className={`font-heading font-semibold text-base mb-4 ${isDark ? 'text-white' : 'text-navy'}`}>
-            Data
+            {t('settings.data')}
           </h2>
-          <button
-            onClick={handleClearHistory}
-            className={`text-sm font-heading font-medium px-4 py-2 rounded-xl transition-colors ${
-              cleared
-                ? 'text-emerald bg-emerald/10'
-                : isDark
-                ? 'text-red-400 hover:bg-red-500/10'
-                : 'text-red-500 hover:bg-red-50'
-            }`}
-          >
-            {cleared ? 'History cleared ✓' : 'Clear local history'}
-          </button>
+          <div className="space-y-3">
+            <button
+              onClick={handleClearHistory}
+              className={`text-sm font-heading font-medium px-4 py-2 rounded-xl transition-colors ${
+                cleared
+                  ? 'text-emerald bg-emerald/10'
+                  : isDark
+                  ? 'text-red-400 hover:bg-red-500/10'
+                  : 'text-red-500 hover:bg-red-50'
+              }`}
+            >
+              {cleared ? t('settings.historyCleared') : t('settings.clearHistory')}
+            </button>
+            <button
+              onClick={resetOnboarding}
+              className={`block text-sm font-heading font-medium px-4 py-2 rounded-xl transition-colors ${
+                isDark
+                  ? 'text-slate-400 hover:bg-slate-700'
+                  : 'text-stone-500 hover:bg-stone-100'
+              }`}
+            >
+              {t('settings.resetOnboarding')}
+            </button>
+          </div>
         </section>
 
         {/* Academic integrity notice */}
         <section className={`rounded-2xl p-5 border ${isDark ? 'bg-amber-900/10 border-amber-800/20' : 'bg-amber-50 border-amber-200'}`}>
           <p className={`text-sm font-heading font-medium mb-1 ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
-            Academic Integrity
+            {t('settings.academic')}
           </p>
           <p className={`text-xs leading-relaxed ${isDark ? 'text-amber-400/70' : 'text-amber-600'}`}>
-            EasyStudy helps you understand, not just copy answers. Use solutions to learn the process, not to submit as your own work.
+            {t('settings.academicMsg')}
           </p>
         </section>
       </div>

@@ -1,0 +1,121 @@
+{
+  "subject": "Biology",
+  "icon": "🧬",
+  "topics": [
+    {
+      "id": "cell-biology",
+      "name": "Cell Biology",
+      "subtopics": [
+        {
+          "id": "cell-structure",
+          "name": "Cell Structure",
+          "theory": "Cells are the basic unit of life. All cells have a cell membrane, cytoplasm, and genetic material (DNA).\n\nProkaryotic cells (bacteria) lack a nucleus and membrane-bound organelles. Eukaryotic cells (animals, plants, fungi) have a nucleus and specialized organelles.\n\nKey organelles: nucleus (DNA storage), mitochondria (energy production via cellular respiration), endoplasmic reticulum (protein and lipid synthesis), Golgi apparatus (packaging and transport), ribosomes (protein synthesis). Plant cells additionally have a cell wall, chloroplasts, and a large central vacuole.",
+          "examples": [
+            {
+              "question": "Compare and contrast plant and animal cells.",
+              "steps": [
+                { "title": "Shared features", "explanation": "Both have nucleus, mitochondria, ER, Golgi, ribosomes, cell membrane" },
+                { "title": "Plant cell only", "explanation": "Cell wall (cellulose), chloroplasts, large central vacuole" },
+                { "title": "Animal cell only", "explanation": "Centrioles, lysosomes (more prominent), no cell wall" }
+              ],
+              "answer": "Both are eukaryotic, but plant cells have cell walls, chloroplasts, and large vacuoles that animal cells lack."
+            }
+          ],
+          "relatedTopics": ["genetics"]
+        }
+      ]
+    },
+    {
+      "id": "genetics",
+      "name": "Genetics",
+      "subtopics": [
+        {
+          "id": "dna-heredity",
+          "name": "DNA & Heredity",
+          "theory": "DNA (deoxyribonucleic acid) carries genetic information as a double helix of nucleotides. Each nucleotide has a sugar, phosphate group, and one of four bases: Adenine (A), Thymine (T), Guanine (G), Cytosine (C). A pairs with T, G pairs with C.\n\nGenes are segments of DNA that code for proteins. Alleles are different versions of a gene. Dominant alleles (capital letters) mask recessive alleles (lowercase).\n\nMendel's laws: Law of Segregation (alleles separate during gamete formation) and Law of Independent Assortment (genes on different chromosomes sort independently).",
+          "examples": [
+            {
+              "question": "In a cross between Bb × Bb, what fraction of offspring will be homozygous recessive?",
+              "steps": [
+                { "title": "Draw Punnett square", "explanation": "BB, Bb, Bb, bb — four possible combinations" },
+                { "title": "Identify homozygous recessive", "explanation": "Only bb = 1 out of 4" }
+              ],
+              "answer": "$\\frac{1}{4}$ or 25% will be homozygous recessive (bb)"
+            }
+          ],
+          "relatedTopics": ["cell-structure", "evolution"]
+        }
+      ]
+    },
+    {
+      "id": "evolution",
+      "name": "Evolution",
+      "subtopics": [
+        {
+          "id": "natural-selection",
+          "name": "Natural Selection",
+          "theory": "Evolution is the change in allele frequencies in a population over time. Charles Darwin proposed natural selection as the primary mechanism.\n\nNatural selection requires: (1) variation within a population, (2) heritable traits, (3) differential survival and reproduction based on traits, (4) traits that increase fitness become more common.\n\nEvidence includes fossil records, homologous structures, DNA comparisons, and observed speciation. Speciation occurs when populations become reproductively isolated.",
+          "examples": [
+            {
+              "question": "Explain how antibiotic resistance develops in bacteria through natural selection.",
+              "steps": [
+                { "title": "Variation exists", "explanation": "Some bacteria have mutations giving antibiotic resistance" },
+                { "title": "Selection pressure", "explanation": "Antibiotic kills susceptible bacteria, resistant ones survive" },
+                { "title": "Reproduction", "explanation": "Resistant bacteria reproduce, passing on resistance genes" },
+                { "title": "Result", "explanation": "Population shifts to mostly resistant bacteria" }
+              ],
+              "answer": "Natural selection favors bacteria with resistance mutations when antibiotics are present, leading to resistant populations."
+            }
+          ],
+          "relatedTopics": ["dna-heredity"]
+        }
+      ]
+    },
+    {
+      "id": "human-body",
+      "name": "Human Body Systems",
+      "subtopics": [
+        {
+          "id": "circulatory",
+          "name": "Circulatory System",
+          "theory": "The circulatory system transports oxygen, nutrients, hormones, and waste products throughout the body. The heart is a four-chambered pump.\n\nBlood flows: body → right atrium → right ventricle → lungs (pulmonary circuit) → left atrium → left ventricle → body (systemic circuit).\n\nArteries carry blood away from the heart (oxygenated in systemic). Veins carry blood toward the heart. Capillaries are tiny vessels where gas exchange occurs.",
+          "examples": [
+            {
+              "question": "Trace the path of a red blood cell from the right atrium back to the right atrium.",
+              "steps": [
+                { "title": "Right side of heart", "explanation": "Right atrium → Right ventricle → Pulmonary artery" },
+                { "title": "Lungs", "explanation": "Pulmonary artery → Lungs (gas exchange) → Pulmonary vein" },
+                { "title": "Left side of heart", "explanation": "Left atrium → Left ventricle → Aorta" },
+                { "title": "Body and return", "explanation": "Aorta → Body (delivers O₂) → Vena cava → Right atrium" }
+              ],
+              "answer": "RA → RV → Pulmonary artery → Lungs → Pulmonary vein → LA → LV → Aorta → Body → Vena cava → RA"
+            }
+          ],
+          "relatedTopics": ["cell-structure"]
+        }
+      ]
+    },
+    {
+      "id": "ecology",
+      "name": "Ecology",
+      "subtopics": [
+        {
+          "id": "ecosystems",
+          "name": "Ecosystems",
+          "theory": "An ecosystem includes all living organisms (biotic) and non-living components (abiotic) in an area interacting together.\n\nEnergy flows through trophic levels: producers → primary consumers → secondary consumers → tertiary consumers. Only about 10% of energy transfers between levels.\n\nBiogeochemical cycles (carbon, nitrogen, water) recycle matter. Biodiversity describes the variety of life and is essential for ecosystem stability. Human activities like deforestation and pollution threaten ecosystems.",
+          "examples": [
+            {
+              "question": "If producers capture 10,000 kJ of energy, how much is available to secondary consumers?",
+              "steps": [
+                { "title": "Apply 10% rule", "explanation": "Primary consumers get $10{,}000 \\times 0.1 = 1{,}000$ kJ" },
+                { "title": "Apply again", "explanation": "Secondary consumers get $1{,}000 \\times 0.1 = 100$ kJ" }
+              ],
+              "answer": "$100$ kJ available to secondary consumers"
+            }
+          ],
+          "relatedTopics": ["natural-selection"]
+        }
+      ]
+    }
+  ]
+}

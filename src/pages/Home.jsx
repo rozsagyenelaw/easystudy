@@ -142,6 +142,20 @@ export default function Home() {
           </p>
         </Link>
         <Link
+          to="/topics"
+          className={`rounded-2xl p-5 text-center transition-colors ${
+            isDark ? 'bg-navy-light border border-slate-700 hover:border-slate-600' : 'bg-white border border-stone-200 hover:border-stone-300'
+          }`}
+        >
+          <div className="text-3xl mb-2">📚</div>
+          <h3 className={`font-heading font-semibold text-sm mb-1 ${isDark ? 'text-white' : 'text-navy'}`}>
+            Browse Topics
+          </h3>
+          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+            Theory, examples & practice by topic
+          </p>
+        </Link>
+        <Link
           to="/study-plan"
           className={`rounded-2xl p-5 text-center transition-colors ${
             isDark ? 'bg-navy-light border border-slate-700 hover:border-slate-600' : 'bg-white border border-stone-200 hover:border-stone-300'
@@ -153,20 +167,6 @@ export default function Home() {
           </h3>
           <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
             AI-generated personalized schedule
-          </p>
-        </Link>
-        <Link
-          to="/formulas"
-          className={`rounded-2xl p-5 text-center transition-colors ${
-            isDark ? 'bg-navy-light border border-slate-700 hover:border-slate-600' : 'bg-white border border-stone-200 hover:border-stone-300'
-          }`}
-        >
-          <div className="text-3xl mb-2">📐</div>
-          <h3 className={`font-heading font-semibold text-sm mb-1 ${isDark ? 'text-white' : 'text-navy'}`}>
-            Formula Sheets
-          </h3>
-          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-            Quick reference for common formulas
           </p>
         </Link>
         <Link

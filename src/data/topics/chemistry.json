@@ -1,0 +1,117 @@
+{
+  "subject": "Chemistry",
+  "icon": "🧪",
+  "topics": [
+    {
+      "id": "atomic-structure",
+      "name": "Atomic Structure",
+      "subtopics": [
+        {
+          "id": "atoms-elements",
+          "name": "Atoms & Elements",
+          "theory": "An atom consists of a nucleus (protons and neutrons) surrounded by electrons. The atomic number ($Z$) is the number of protons; the mass number ($A$) is protons plus neutrons.\n\nElectrons are arranged in energy levels (shells). The electron configuration determines an element's chemical properties. The periodic table organizes elements by atomic number and groups them by similar properties.\n\nIsotopes are atoms of the same element with different numbers of neutrons.",
+          "examples": [
+            {
+              "question": "Write the electron configuration of Carbon ($Z = 6$).",
+              "steps": [
+                { "title": "Fill orbitals in order", "explanation": "$1s^2 \\, 2s^2 \\, 2p^2$" },
+                { "title": "Verify electron count", "explanation": "$2 + 2 + 2 = 6$ electrons ✓" }
+              ],
+              "answer": "$1s^2 \\, 2s^2 \\, 2p^2$"
+            }
+          ],
+          "relatedTopics": ["chemical-bonding"]
+        }
+      ]
+    },
+    {
+      "id": "chemical-bonding",
+      "name": "Chemical Bonding",
+      "subtopics": [
+        {
+          "id": "bond-types",
+          "name": "Types of Bonds",
+          "theory": "Chemical bonds form when atoms share or transfer electrons to achieve stable electron configurations.\n\nIonic bonds: electrons are transferred from metal to non-metal, creating ions held together by electrostatic attraction. Example: NaCl.\n\nCovalent bonds: electrons are shared between non-metal atoms. Can be single, double, or triple bonds. Example: $H_2O$.\n\nMetallic bonds: electrons are delocalized among metal atoms, creating a 'sea of electrons' that allows conductivity.",
+          "examples": [
+            {
+              "question": "What type of bond forms between Na and Cl?",
+              "steps": [
+                { "title": "Identify element types", "explanation": "Na is a metal, Cl is a non-metal" },
+                { "title": "Determine bond type", "explanation": "Metal + non-metal = ionic bond" },
+                { "title": "Explain", "explanation": "Na loses 1 electron → Na⁺, Cl gains 1 electron → Cl⁻" }
+              ],
+              "answer": "Ionic bond — Na donates its valence electron to Cl"
+            }
+          ],
+          "relatedTopics": ["atoms-elements", "stoichiometry"]
+        }
+      ]
+    },
+    {
+      "id": "stoichiometry",
+      "name": "Stoichiometry",
+      "subtopics": [
+        {
+          "id": "mole-concept",
+          "name": "The Mole Concept",
+          "theory": "The mole is the SI unit for amount of substance. One mole contains $6.022 \\times 10^{23}$ particles (Avogadro's number).\n\nMolar mass is the mass of one mole of a substance (in g/mol), numerically equal to the atomic/molecular mass. For example, water ($H_2O$) has molar mass $18.02$ g/mol.\n\nConversions: moles $= \\frac{\\text{mass}}{\\text{molar mass}}$, and number of particles $= \\text{moles} \\times 6.022 \\times 10^{23}$.",
+          "examples": [
+            {
+              "question": "How many moles are in $36$ g of water ($H_2O$)?",
+              "steps": [
+                { "title": "Find molar mass", "explanation": "$M = 2(1.01) + 16.00 = 18.02$ g/mol" },
+                { "title": "Calculate moles", "explanation": "$n = \\frac{36}{18.02} \\approx 2.0$ mol" }
+              ],
+              "answer": "$n \\approx 2.0$ moles"
+            }
+          ],
+          "relatedTopics": ["bond-types"]
+        }
+      ]
+    },
+    {
+      "id": "acids-bases",
+      "name": "Acids & Bases",
+      "subtopics": [
+        {
+          "id": "ph-scale",
+          "name": "pH and Acid-Base Reactions",
+          "theory": "Acids donate protons ($H^+$) and bases accept protons (Brønsted-Lowry definition). The pH scale measures acidity: $\\text{pH} = -\\log[H^+]$.\n\npH < 7 is acidic, pH = 7 is neutral, pH > 7 is basic. Strong acids/bases fully dissociate in water; weak acids/bases partially dissociate.\n\nNeutralization: acid + base → salt + water. Example: $HCl + NaOH \\rightarrow NaCl + H_2O$.",
+          "examples": [
+            {
+              "question": "What is the pH of a solution with $[H^+] = 10^{-4}$ M?",
+              "steps": [
+                { "title": "Apply pH formula", "explanation": "$\\text{pH} = -\\log(10^{-4}) = 4$" }
+              ],
+              "answer": "pH $= 4$ (acidic)"
+            }
+          ],
+          "relatedTopics": ["mole-concept"]
+        }
+      ]
+    },
+    {
+      "id": "organic",
+      "name": "Organic Chemistry",
+      "subtopics": [
+        {
+          "id": "hydrocarbons",
+          "name": "Hydrocarbons",
+          "theory": "Organic chemistry studies carbon-based compounds. Hydrocarbons contain only carbon and hydrogen.\n\nAlkanes ($C_nH_{2n+2}$): single bonds only, saturated. Examples: methane ($CH_4$), ethane ($C_2H_6$).\nAlkenes ($C_nH_{2n}$): contain at least one C=C double bond, unsaturated.\nAlkynes ($C_nH_{2n-2}$): contain at least one C≡C triple bond.\n\nNaming follows IUPAC rules: identify the longest carbon chain, number carbons, name substituents.",
+          "examples": [
+            {
+              "question": "Name the compound $CH_3CH_2CH_2CH_3$.",
+              "steps": [
+                { "title": "Count carbons", "explanation": "4 carbon atoms in the longest chain" },
+                { "title": "Identify type", "explanation": "All single bonds → alkane" },
+                { "title": "Apply naming", "explanation": "4-carbon alkane = butane" }
+              ],
+              "answer": "Butane"
+            }
+          ],
+          "relatedTopics": ["bond-types"]
+        }
+      ]
+    }
+  ]
+}

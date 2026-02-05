@@ -1,0 +1,133 @@
+{
+  "subject": "Physics",
+  "icon": "⚛️",
+  "topics": [
+    {
+      "id": "mechanics",
+      "name": "Mechanics",
+      "subtopics": [
+        {
+          "id": "kinematics",
+          "name": "Kinematics",
+          "theory": "Kinematics describes motion without considering the forces that cause it. The key quantities are displacement ($s$), velocity ($v$), acceleration ($a$), and time ($t$).\n\nFor constant acceleration, the kinematic equations are:\n$$v = u + at$$\n$$s = ut + \\frac{1}{2}at^2$$\n$$v^2 = u^2 + 2as$$\nwhere $u$ is initial velocity.\n\nFree fall is a special case where $a = g \\approx 9.8$ m/s². Projectile motion combines horizontal (constant velocity) and vertical (constant acceleration) components.",
+          "examples": [
+            {
+              "question": "A car accelerates from rest at $2$ m/s². How far does it travel in $5$ seconds?",
+              "steps": [
+                { "title": "Identify knowns", "explanation": "$u = 0$, $a = 2$ m/s², $t = 5$ s" },
+                { "title": "Use kinematic equation", "explanation": "$s = ut + \\frac{1}{2}at^2 = 0 + \\frac{1}{2}(2)(25) = 25$ m" }
+              ],
+              "answer": "$s = 25$ m"
+            },
+            {
+              "question": "A ball is thrown upward at $20$ m/s. How high does it go?",
+              "steps": [
+                { "title": "At maximum height, $v = 0$", "explanation": "Use $v^2 = u^2 + 2as$" },
+                { "title": "Solve for s", "explanation": "$0 = 400 + 2(-9.8)s$, so $s = \\frac{400}{19.6} \\approx 20.4$ m" }
+              ],
+              "answer": "$h \\approx 20.4$ m"
+            }
+          ],
+          "relatedTopics": ["forces", "energy"]
+        },
+        {
+          "id": "forces",
+          "name": "Forces & Newton's Laws",
+          "theory": "Newton's Three Laws of Motion:\n\n1. An object at rest stays at rest, and an object in motion stays in motion unless acted upon by a net force.\n2. $F = ma$ — force equals mass times acceleration.\n3. For every action, there is an equal and opposite reaction.\n\nCommon forces include gravity ($F_g = mg$), normal force, friction ($f = \\mu N$), and tension. Free body diagrams help visualize all forces acting on an object.\n\nEquilibrium occurs when the net force is zero ($\\sum F = 0$).",
+          "examples": [
+            {
+              "question": "A $5$ kg box is pushed with $20$ N on a frictionless surface. Find the acceleration.",
+              "steps": [
+                { "title": "Apply Newton's second law", "explanation": "$F = ma$, so $a = \\frac{F}{m}$" },
+                { "title": "Calculate", "explanation": "$a = \\frac{20}{5} = 4$ m/s²" }
+              ],
+              "answer": "$a = 4$ m/s²"
+            }
+          ],
+          "relatedTopics": ["kinematics", "energy"]
+        },
+        {
+          "id": "energy",
+          "name": "Energy & Work",
+          "theory": "Work is done when a force causes displacement: $W = Fd\\cos\\theta$. The unit of work is the Joule (J).\n\nKinetic energy: $KE = \\frac{1}{2}mv^2$. Potential energy (gravitational): $PE = mgh$.\n\nThe Work-Energy Theorem states that the net work equals the change in kinetic energy. Conservation of energy: in an isolated system, total energy remains constant.\n\nPower is the rate of doing work: $P = \\frac{W}{t} = Fv$.",
+          "examples": [
+            {
+              "question": "A $2$ kg ball is dropped from $10$ m. Find its speed just before hitting the ground.",
+              "steps": [
+                { "title": "Use conservation of energy", "explanation": "$mgh = \\frac{1}{2}mv^2$, mass cancels" },
+                { "title": "Solve for v", "explanation": "$v = \\sqrt{2gh} = \\sqrt{2(9.8)(10)} = \\sqrt{196} = 14$ m/s" }
+              ],
+              "answer": "$v = 14$ m/s"
+            }
+          ],
+          "relatedTopics": ["kinematics", "forces"]
+        }
+      ]
+    },
+    {
+      "id": "electricity",
+      "name": "Electricity",
+      "subtopics": [
+        {
+          "id": "circuits",
+          "name": "Electric Circuits",
+          "theory": "Electric current ($I$) is the flow of charge, measured in Amperes. Voltage ($V$) is the electric potential difference. Resistance ($R$) opposes current flow.\n\nOhm's Law: $V = IR$. Power: $P = IV = I^2R = \\frac{V^2}{R}$.\n\nSeries circuits: total resistance $R_{total} = R_1 + R_2 + ...$, same current through all components.\nParallel circuits: $\\frac{1}{R_{total}} = \\frac{1}{R_1} + \\frac{1}{R_2} + ...$, same voltage across all branches.",
+          "examples": [
+            {
+              "question": "Two resistors ($4\\Omega$ and $6\\Omega$) are in series with a $20$V battery. Find the current.",
+              "steps": [
+                { "title": "Find total resistance", "explanation": "$R = 4 + 6 = 10\\Omega$" },
+                { "title": "Apply Ohm's Law", "explanation": "$I = \\frac{V}{R} = \\frac{20}{10} = 2$ A" }
+              ],
+              "answer": "$I = 2$ A"
+            }
+          ],
+          "relatedTopics": []
+        }
+      ]
+    },
+    {
+      "id": "waves",
+      "name": "Waves",
+      "subtopics": [
+        {
+          "id": "wave-properties",
+          "name": "Wave Properties",
+          "theory": "A wave transfers energy without transferring matter. Key properties: wavelength ($\\lambda$), frequency ($f$), amplitude ($A$), and speed ($v$).\n\nThe wave equation: $v = f\\lambda$. Waves can be transverse (oscillation perpendicular to travel) or longitudinal (parallel to travel).\n\nPhenomena include reflection, refraction, diffraction, and interference. Standing waves form when waves of equal frequency travel in opposite directions.",
+          "examples": [
+            {
+              "question": "A wave has frequency $500$ Hz and wavelength $0.68$ m. Find its speed.",
+              "steps": [
+                { "title": "Apply wave equation", "explanation": "$v = f\\lambda = 500 \\times 0.68 = 340$ m/s" }
+              ],
+              "answer": "$v = 340$ m/s (speed of sound in air!)"
+            }
+          ],
+          "relatedTopics": []
+        }
+      ]
+    },
+    {
+      "id": "thermodynamics",
+      "name": "Thermodynamics",
+      "subtopics": [
+        {
+          "id": "heat-temperature",
+          "name": "Heat & Temperature",
+          "theory": "Temperature measures the average kinetic energy of particles. Heat ($Q$) is the transfer of thermal energy between objects at different temperatures.\n\nSpecific heat capacity: $Q = mc\\Delta T$, where $c$ is the specific heat capacity. Latent heat: $Q = mL$ for phase changes.\n\nThe three laws of thermodynamics govern energy transfer. The first law states that energy is conserved: $\\Delta U = Q - W$, where $U$ is internal energy and $W$ is work done by the system.",
+          "examples": [
+            {
+              "question": "How much heat is needed to raise $2$ kg of water from $20°$C to $80°$C? ($c = 4186$ J/kg·°C)",
+              "steps": [
+                { "title": "Apply specific heat formula", "explanation": "$Q = mc\\Delta T = 2 \\times 4186 \\times 60$" },
+                { "title": "Calculate", "explanation": "$Q = 502{,}320$ J $\\approx 502$ kJ" }
+              ],
+              "answer": "$Q \\approx 502$ kJ"
+            }
+          ],
+          "relatedTopics": []
+        }
+      ]
+    }
+  ]
+}

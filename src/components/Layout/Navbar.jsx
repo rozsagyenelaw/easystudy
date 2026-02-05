@@ -2,12 +2,13 @@ import { Link, useLocation } from 'react-router-dom'
 import { useTheme } from '../../hooks/useTheme'
 import { useAuth } from '../../hooks/useAuth'
 import ThemeToggle from './ThemeToggle'
+import OfflineIndicator from '../Offline/OfflineIndicator'
 
 const NAV_ITEMS = [
   { to: '/', label: 'Home', icon: '🏠' },
   { to: '/ask', label: 'Ask', icon: '✨' },
+  { to: '/topics', label: 'Topics', icon: '📚' },
   { to: '/progress', label: 'Progress', icon: '📊' },
-  { to: '/practice', label: 'Practice', icon: '🎯' },
   { to: '/settings', label: 'Profile', icon: '👤' },
 ]
 
@@ -37,7 +38,7 @@ export default function Navbar() {
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
             {NAV_ITEMS.map(({ to, label }) => {
-              const isActive = location.pathname === to
+              const isActive = location.pathname === to || (to !== '/' && location.pathname.startsWith(to))
               return (
                 <Link
                   key={to}
@@ -58,6 +59,7 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <OfflineIndicator />
             <ThemeToggle />
             {user ? (
               <Link to="/settings" aria-label="Settings">
@@ -95,7 +97,7 @@ export default function Navbar() {
       >
         <div className="flex items-center justify-around h-14">
           {NAV_ITEMS.map(({ to, label, icon }) => {
-            const isActive = location.pathname === to
+            const isActive = location.pathname === to || (to !== '/' && location.pathname.startsWith(to))
             return (
               <Link
                 key={to}
