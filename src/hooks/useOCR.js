@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { createWorker } from 'tesseract.js'
+import Tesseract from 'tesseract.js'
 
 export function useOCR() {
   const [text, setText] = useState('')
@@ -14,9 +14,14 @@ export function useOCR() {
     setConfidence(null)
 
     try {
-      const worker = await createWorker('eng')
-      const { data } = await worker.recognize(imageSource)
-      await worker.terminate()
+      // Use Tesseract.recognize for simpler API that handles worker internally
+      const { data } = await Tesseract.recognize(imageSource, 'eng', {
+        logger: (m) => {
+          if (m.status === 'recognizing text') {
+            // Could add progress here if needed
+          }
+        },
+      })
 
       setText(data.text.trim())
       setConfidence(data.confidence)
