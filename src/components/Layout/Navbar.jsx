@@ -6,8 +6,8 @@ import ThemeToggle from './ThemeToggle'
 const NAV_ITEMS = [
   { to: '/', label: 'Home', icon: '🏠' },
   { to: '/ask', label: 'Ask', icon: '✨' },
+  { to: '/progress', label: 'Progress', icon: '📊' },
   { to: '/practice', label: 'Practice', icon: '🎯' },
-  { to: '/formulas', label: 'Formulas', icon: '📐' },
   { to: '/settings', label: 'Profile', icon: '👤' },
 ]
 

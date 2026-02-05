@@ -3,6 +3,9 @@ import { motion } from 'framer-motion'
 import { useTheme } from '../hooks/useTheme'
 import { useQuestionSolver } from '../hooks/useQuestionSolver'
 import { useQuestionHistory } from '../hooks/useQuestionHistory'
+import { useProgress } from '../hooks/useProgress'
+import { useStreaks } from '../hooks/useStreaks'
+import { useAchievements } from '../hooks/useAchievements'
 import QuestionInput from '../components/Question/QuestionInput'
 import LoadingSpinner from '../components/Common/LoadingSpinner'
 import ErrorMessage from '../components/Common/ErrorMessage'
@@ -18,12 +21,33 @@ export default function AskQuestion() {
   const { isDark } = useTheme()
   const navigate = useNavigate()
   const { solve, loading, error, reset } = useQuestionSolver()
-  const { addQuestion } = useQuestionHistory()
+  const { addQuestion, history } = useQuestionHistory()
+  const { recordQuestion, stats } = useProgress()
+  const { recordActivity, streaks } = useStreaks()
+  const { checkAchievements } = useAchievements()
 
   const handleSubmit = async ({ question, subject, depth }) => {
     const solution = await solve({ question, subject, depth })
     if (solution) {
       const id = await addQuestion({ question, subject, solution })
+
+      // Track progress
+      const detectedSubject = solution.subject_detected || subject || 'General'
+      const detectedTopic = solution.topic || 'General'
+      recordQuestion(detectedSubject, detectedTopic, true, solution.difficulty || 'medium')
+
+      // Track streak activity
+      recordActivity({ minutesStudied: 2, questionsAnswered: 1 })
+
+      // Check achievements
+      checkAchievements({
+        totalQuestions: (stats.totalQuestions || 0) + 1,
+        subjectsStudied: stats.subjectsStudied || 0,
+        currentStreak: streaks.currentStreak || 0,
+        practiceSessions: 0,
+        hasSubjectExpert: false,
+      })
+
       if (id) {
         navigate(`/solution/${id}`)
       }

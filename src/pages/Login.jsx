@@ -1,30 +1,85 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { collection, addDoc, setDoc, doc, serverTimestamp } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 import { useTheme } from '../hooks/useTheme'
 import { useAuth } from '../hooks/useAuth'
+
+const LOCAL_KEYS = [
+  { key: 'easystudy-history', collection: 'questions', type: 'array' },
+  { key: 'easystudy-progress', collection: 'progress', type: 'objectMap' },
+  { key: 'easystudy-streaks', docPath: 'streaks/current', type: 'single' },
+  { key: 'easystudy-achievements', collection: 'achievements', type: 'arrayWithIds' },
+  { key: 'easystudy-spaced-rep', docPath: 'spacedRepetition/data', type: 'single' },
+  { key: 'easystudy-study-plan', docPath: 'studyPlan/current', type: 'single' },
+]
+
+async function migrateGuestData(uid) {
+  for (const { key, collection: col, docPath, type } of LOCAL_KEYS) {
+    try {
+      const raw = localStorage.getItem(key)
+      if (!raw) continue
+      const data = JSON.parse(raw)
+      if (!data || (Array.isArray(data) && data.length === 0) || (typeof data === 'object' && Object.keys(data).length === 0)) continue
+
+      if (type === 'array' && Array.isArray(data)) {
+        for (const item of data) {
+          await addDoc(collection(db, 'users', uid, col), {
+            ...item,
+            timestamp: serverTimestamp(),
+          })
+        }
+      } else if (type === 'objectMap') {
+        for (const [subKey, value] of Object.entries(data)) {
+          await setDoc(doc(db, 'users', uid, col, subKey), value, { merge: true })
+        }
+      } else if (type === 'arrayWithIds') {
+        for (const item of data) {
+          const id = item.id || crypto.randomUUID()
+          await setDoc(doc(db, 'users', uid, col, id), item)
+        }
+      } else if (type === 'single' && docPath) {
+        await setDoc(doc(db, 'users', uid, ...docPath.split('/')), data, { merge: true })
+      }
+
+      // Clear local after migration
+      localStorage.removeItem(key)
+    } catch {
+      // Silently continue — guest data loss is acceptable
+    }
+  }
+}
 
 export default function Login() {
   const { isDark } = useTheme()
   const navigate = useNavigate()
   const { loginWithGoogle, loginWithEmail, signupWithEmail, continueAsGuest } = useAuth()
-  const [mode, setMode] = useState('login') // 'login' | 'signup'
+  const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const handlePostLogin = async (userCredential) => {
+    const uid = userCredential.user.uid
+    // Migrate guest data to Firestore
+    await migrateGuestData(uid)
+    navigate('/')
+  }
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
+      let cred
       if (mode === 'signup') {
-        await signupWithEmail(email, password)
+        cred = await signupWithEmail(email, password)
       } else {
-        await loginWithEmail(email, password)
+        cred = await loginWithEmail(email, password)
       }
-      navigate('/')
+      await handlePostLogin(cred)
     } catch (err) {
       setError(err.message?.replace('Firebase: ', '').replace(/\(auth\/.*\)/, '').trim() || 'Something went wrong')
     } finally {
@@ -35,8 +90,8 @@ export default function Login() {
   const handleGoogle = async () => {
     setError('')
     try {
-      await loginWithGoogle()
-      navigate('/')
+      const cred = await loginWithGoogle()
+      await handlePostLogin(cred)
     } catch (err) {
       if (err.code !== 'auth/popup-closed-by-user') {
         setError('Google sign-in failed. Try again.')

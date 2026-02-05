@@ -1,7 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useTheme } from '../hooks/useTheme'
 import { usePracticeMode } from '../hooks/usePracticeMode'
+import { useProgress } from '../hooks/useProgress'
+import { useStreaks } from '../hooks/useStreaks'
+import { useSpacedRepetition } from '../hooks/useSpacedRepetition'
+import { useAchievements } from '../hooks/useAchievements'
 import SubjectSelector from '../components/Question/SubjectSelector'
 import DifficultySelector from '../components/Practice/DifficultySelector'
 import PracticeSession from '../components/Practice/PracticeSession'
@@ -12,16 +17,72 @@ const COUNT_OPTIONS = [5, 10, 15]
 
 export default function PracticeMode() {
   const { isDark } = useTheme()
+  const [searchParams] = useSearchParams()
   const practice = usePracticeMode()
+  const { recordQuestion, stats } = useProgress()
+  const { recordActivity, streaks } = useStreaks()
+  const { dueItems, addItem, reviewItem } = useSpacedRepetition()
+  const { checkAchievements } = useAchievements()
+
   const [subject, setSubject] = useState(null)
   const [topic, setTopic] = useState('')
   const [difficulty, setDifficulty] = useState('medium')
   const [count, setCount] = useState(5)
+  const [sessionTracked, setSessionTracked] = useState(false)
+
+  // Pre-fill from URL params (from study plan or review links)
+  useEffect(() => {
+    const urlSubject = searchParams.get('subject')
+    const urlTopic = searchParams.get('topic')
+    if (urlSubject) setSubject(urlSubject)
+    if (urlTopic) setTopic(urlTopic)
+  }, [searchParams])
 
   const handleStart = () => {
     if (!subject) return
+    setSessionTracked(false)
     practice.generateQuestions({ subject, topic: topic || undefined, difficulty, count })
   }
+
+  // Track progress when session completes
+  useEffect(() => {
+    if (practice.sessionComplete && !sessionTracked) {
+      setSessionTracked(true)
+
+      const attempted = Object.keys(practice.answers).filter(k => practice.answers[k]?.trim()).length
+      const solutionsViewed = Object.keys(practice.revealedSolutions).length
+
+      // Record progress for each attempted question
+      practice.questions.forEach((q, i) => {
+        const answered = practice.answers[i]?.trim()
+        const viewed = practice.revealedSolutions[i]
+        if (answered || viewed) {
+          const questionSubject = q.subject || subject || 'General'
+          const questionTopic = q.topic || topic || 'General'
+          const correct = answered && !viewed
+          recordQuestion(questionSubject, questionTopic, correct, q.difficulty || difficulty)
+
+          // Add to spaced repetition if got wrong or viewed solution
+          if (!correct) {
+            addItem({ subject: questionSubject, topic: questionTopic, question: q.question_text, type: 'practice' })
+          }
+        }
+      })
+
+      // Track streak activity
+      const minutesEstimate = Math.max(1, Math.round(practice.totalTime / 60))
+      recordActivity({ minutesStudied: minutesEstimate, questionsAnswered: attempted })
+
+      // Check achievements
+      checkAchievements({
+        totalQuestions: (stats.totalQuestions || 0) + attempted,
+        subjectsStudied: stats.subjectsStudied || 0,
+        currentStreak: streaks.currentStreak || 0,
+        practiceSessions: 1,
+        hasSubjectExpert: false,
+      })
+    }
+  }, [practice.sessionComplete])
 
   // Active practice session
   if (practice.questions.length > 0) {
@@ -48,6 +109,33 @@ export default function PracticeMode() {
       <p className={`text-sm mb-8 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
         Generate practice questions to test your understanding
       </p>
+
+      {/* Due for review banner */}
+      {dueItems.length > 0 && (
+        <div className={`rounded-2xl p-4 border mb-6 ${
+          isDark ? 'bg-amber-900/10 border-amber-800/20' : 'bg-amber-50 border-amber-200'
+        }`}>
+          <p className={`text-sm font-heading font-medium mb-1 ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
+            {dueItems.length} topic{dueItems.length !== 1 ? 's' : ''} due for review
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {dueItems.slice(0, 4).map(item => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setSubject(item.subject)
+                  setTopic(item.topic || '')
+                }}
+                className={`px-2.5 py-1 rounded-full text-xs font-heading transition-colors ${
+                  isDark ? 'bg-amber-900/30 text-amber-400 hover:bg-amber-900/50' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                }`}
+              >
+                {item.topic || item.subject}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="space-y-6">
         {/* Subject */}

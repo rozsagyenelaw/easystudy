@@ -12,6 +12,7 @@ export default defineConfig({
           'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
           'vendor-motion': ['framer-motion'],
           'vendor-katex': ['katex'],
+          'vendor-recharts': ['recharts'],
         },
       },
     },

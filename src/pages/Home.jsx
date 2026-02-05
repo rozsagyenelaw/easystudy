@@ -3,12 +3,20 @@ import { motion } from 'framer-motion'
 import { useTheme } from '../hooks/useTheme'
 import { useAuth } from '../hooks/useAuth'
 import { useQuestionHistory } from '../hooks/useQuestionHistory'
+import { useStreaks } from '../hooks/useStreaks'
+import { useSpacedRepetition } from '../hooks/useSpacedRepetition'
+import { useStudyPlan } from '../hooks/useStudyPlan'
 import QuestionCard from '../components/Question/QuestionCard'
+import StreakWidget from '../components/Streaks/StreakWidget'
+import DailyGoalProgress from '../components/Streaks/DailyGoalProgress'
 
 export default function Home() {
   const { isDark } = useTheme()
   const { user } = useAuth()
   const { history, toggleBookmark } = useQuestionHistory()
+  const { streaks, todayData, dailyGoalMinutes, streakAtRisk } = useStreaks()
+  const { dueItems } = useSpacedRepetition()
+  const { todayPlan, plan } = useStudyPlan()
 
   const recentQuestions = history.slice(0, 3)
   const hasHistory = recentQuestions.length > 0
@@ -20,7 +28,7 @@ export default function Home() {
       className="max-w-2xl mx-auto px-4 py-8 pb-24"
     >
       {/* Hero */}
-      <div className="text-center mb-10">
+      <div className="text-center mb-8">
         <motion.div
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
@@ -42,11 +50,80 @@ export default function Home() {
       </div>
 
       {/* CTA */}
-      <div className="text-center mb-10">
+      <div className="text-center mb-8">
         <Link to="/ask" className="btn-primary inline-flex items-center gap-2 text-lg px-8 py-4">
           {hasHistory ? 'Ask a new question' : 'Get started'} ✨
         </Link>
       </div>
+
+      {/* Streak & daily goal (for returning users) */}
+      {hasHistory && (
+        <div className="space-y-3 mb-8">
+          <StreakWidget currentStreak={streaks.currentStreak} streakAtRisk={streakAtRisk} />
+          <DailyGoalProgress
+            minutesStudied={todayData.minutesStudied}
+            goalMinutes={dailyGoalMinutes}
+            questionsAnswered={todayData.questionsAnswered}
+          />
+        </div>
+      )}
+
+      {/* Due for review */}
+      {dueItems.length > 0 && (
+        <div className={`rounded-2xl p-4 border mb-6 ${
+          isDark ? 'bg-amber-900/10 border-amber-800/20' : 'bg-amber-50 border-amber-200'
+        }`}>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className={`font-heading font-semibold text-sm ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
+              Due for Review ({dueItems.length})
+            </h2>
+            <Link to="/practice" className="text-xs font-heading font-medium text-accent">
+              Review →
+            </Link>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {dueItems.slice(0, 4).map(item => (
+              <span
+                key={item.id}
+                className={`px-2.5 py-1 rounded-full text-xs font-heading ${
+                  isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'
+                }`}
+              >
+                {item.topic || item.subject}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Today's study plan */}
+      {todayPlan && (
+        <div className={`rounded-2xl p-4 border mb-6 ${isDark ? 'bg-accent/5 border-accent/20' : 'bg-blue-50/50 border-accent/10'}`}>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className={`font-heading font-semibold text-sm ${isDark ? 'text-accent' : 'text-accent'}`}>
+              Today's Plan
+            </h2>
+            <Link to="/study-plan" className="text-xs font-heading font-medium text-accent">
+              View full plan →
+            </Link>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {todayPlan.topics?.map((topic, i) => (
+              <span
+                key={i}
+                className={`px-2.5 py-1 rounded-full text-xs font-heading ${
+                  isDark ? 'bg-slate-700 text-slate-300' : 'bg-stone-100 text-stone-600'
+                }`}
+              >
+                {topic}
+              </span>
+            ))}
+          </div>
+          <p className={`text-xs mt-2 ${isDark ? 'text-slate-500' : 'text-stone-400'}`}>
+            ~{todayPlan.estimatedMinutes || 20} min
+          </p>
+        </div>
+      )}
 
       {/* Quick action cards */}
       <div className="grid grid-cols-2 gap-3 mb-8">
@@ -65,6 +142,20 @@ export default function Home() {
           </p>
         </Link>
         <Link
+          to="/study-plan"
+          className={`rounded-2xl p-5 text-center transition-colors ${
+            isDark ? 'bg-navy-light border border-slate-700 hover:border-slate-600' : 'bg-white border border-stone-200 hover:border-stone-300'
+          }`}
+        >
+          <div className="text-3xl mb-2">📅</div>
+          <h3 className={`font-heading font-semibold text-sm mb-1 ${isDark ? 'text-white' : 'text-navy'}`}>
+            Study Plan
+          </h3>
+          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+            AI-generated personalized schedule
+          </p>
+        </Link>
+        <Link
           to="/formulas"
           className={`rounded-2xl p-5 text-center transition-colors ${
             isDark ? 'bg-navy-light border border-slate-700 hover:border-slate-600' : 'bg-white border border-stone-200 hover:border-stone-300'
@@ -76,6 +167,20 @@ export default function Home() {
           </h3>
           <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
             Quick reference for common formulas
+          </p>
+        </Link>
+        <Link
+          to="/progress"
+          className={`rounded-2xl p-5 text-center transition-colors ${
+            isDark ? 'bg-navy-light border border-slate-700 hover:border-slate-600' : 'bg-white border border-stone-200 hover:border-stone-300'
+          }`}
+        >
+          <div className="text-3xl mb-2">📊</div>
+          <h3 className={`font-heading font-semibold text-sm mb-1 ${isDark ? 'text-white' : 'text-navy'}`}>
+            Progress
+          </h3>
+          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+            Track mastery and study activity
           </p>
         </Link>
       </div>

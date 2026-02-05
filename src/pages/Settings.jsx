@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useTheme } from '../hooks/useTheme'
 import { useAuth } from '../hooks/useAuth'
+import { useStreaks } from '../hooks/useStreaks'
+import { useNotifications } from '../hooks/useNotifications'
 import ThemeToggle from '../components/Layout/ThemeToggle'
 
 const DEPTH_OPTIONS = [
@@ -10,9 +13,13 @@ const DEPTH_OPTIONS = [
   { value: 'deep', label: 'Deep' },
 ]
 
+const GOAL_OPTIONS = [10, 15, 20, 30, 45, 60]
+
 export default function Settings() {
   const { isDark } = useTheme()
   const { user, logout } = useAuth()
+  const { dailyGoalMinutes, setDailyGoal } = useStreaks()
+  const { settings: notifSettings, permission, requestPermission, updateSettings, isSupported } = useNotifications()
   const [defaultDepth, setDefaultDepth] = useState(
     () => localStorage.getItem('easystudy-default-depth') || 'standard'
   )
@@ -27,6 +34,13 @@ export default function Settings() {
     localStorage.removeItem('easystudy-history')
     setCleared(true)
     setTimeout(() => setCleared(false), 2000)
+  }
+
+  const handleEnableNotifications = async () => {
+    const granted = await requestPermission()
+    if (!granted) {
+      alert('Notifications permission was denied. You can enable it from your browser settings.')
+    }
   }
 
   return (
@@ -61,16 +75,43 @@ export default function Settings() {
                 </p>
               </div>
             </div>
-            <button
-              onClick={logout}
-              className={`text-sm font-heading font-medium px-4 py-2 rounded-xl transition-colors ${
-                isDark
-                  ? 'text-red-400 hover:bg-red-500/10'
-                  : 'text-red-500 hover:bg-red-50'
-              }`}
-            >
-              Sign out
-            </button>
+            <div className="flex gap-3">
+              <Link
+                to="/profile"
+                className={`text-sm font-heading font-medium px-4 py-2 rounded-xl transition-colors ${
+                  isDark
+                    ? 'text-accent hover:bg-accent/10'
+                    : 'text-accent hover:bg-blue-50'
+                }`}
+              >
+                View profile
+              </Link>
+              <button
+                onClick={logout}
+                className={`text-sm font-heading font-medium px-4 py-2 rounded-xl transition-colors ${
+                  isDark
+                    ? 'text-red-400 hover:bg-red-500/10'
+                    : 'text-red-500 hover:bg-red-50'
+                }`}
+              >
+                Sign out
+              </button>
+            </div>
+          </section>
+        )}
+
+        {/* Guest prompt */}
+        {!user && (
+          <section className={`rounded-2xl p-5 border ${isDark ? 'bg-accent/10 border-accent/30' : 'bg-blue-50 border-accent/20'}`}>
+            <h2 className={`font-heading font-semibold text-base mb-2 ${isDark ? 'text-white' : 'text-navy'}`}>
+              Create an account
+            </h2>
+            <p className={`text-sm mb-3 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+              Sign in to sync your progress across devices and unlock all features.
+            </p>
+            <Link to="/login" className="btn-primary text-sm inline-block">
+              Sign in
+            </Link>
           </section>
         )}
 
@@ -85,12 +126,14 @@ export default function Settings() {
           </div>
         </section>
 
-        {/* Preferences */}
+        {/* Study preferences */}
         <section className={`rounded-2xl p-5 border ${isDark ? 'bg-navy-light border-slate-700' : 'bg-white border-stone-200'}`}>
           <h2 className={`font-heading font-semibold text-base mb-4 ${isDark ? 'text-white' : 'text-navy'}`}>
-            Preferences
+            Study Preferences
           </h2>
-          <div>
+
+          {/* Default depth */}
+          <div className="mb-5">
             <label className={`block text-sm mb-2 ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>
               Default explanation depth
             </label>
@@ -112,7 +155,95 @@ export default function Settings() {
               ))}
             </div>
           </div>
+
+          {/* Daily goal */}
+          <div>
+            <label className={`block text-sm mb-2 ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>
+              Daily study goal
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {GOAL_OPTIONS.map(min => (
+                <button
+                  key={min}
+                  onClick={() => setDailyGoal(min)}
+                  className={`px-3 py-1.5 rounded-xl text-sm font-heading font-medium transition-colors ${
+                    dailyGoalMinutes === min
+                      ? 'bg-accent text-white'
+                      : isDark
+                      ? 'bg-navy-lighter text-slate-400 hover:text-slate-200'
+                      : 'bg-stone-100 text-stone-500 hover:text-stone-700'
+                  }`}
+                >
+                  {min} min
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
+
+        {/* Notifications */}
+        {isSupported && (
+          <section className={`rounded-2xl p-5 border ${isDark ? 'bg-navy-light border-slate-700' : 'bg-white border-stone-200'}`}>
+            <h2 className={`font-heading font-semibold text-base mb-4 ${isDark ? 'text-white' : 'text-navy'}`}>
+              Notifications
+            </h2>
+
+            {permission !== 'granted' ? (
+              <div>
+                <p className={`text-sm mb-3 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                  Get reminders to study, streak alerts, and review notifications.
+                </p>
+                <button
+                  onClick={handleEnableNotifications}
+                  className="btn-secondary text-sm"
+                >
+                  Enable notifications
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {[
+                  { key: 'dailyReminder', label: 'Daily study reminder' },
+                  { key: 'streakReminder', label: 'Streak at risk alert' },
+                  { key: 'reviewReminder', label: 'Spaced repetition reminders' },
+                ].map(({ key, label }) => (
+                  <div key={key} className="flex items-center justify-between">
+                    <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>{label}</span>
+                    <button
+                      onClick={() => updateSettings({ [key]: !notifSettings[key] })}
+                      className={`relative w-12 h-6 rounded-full transition-colors ${
+                        notifSettings[key]
+                          ? 'bg-accent'
+                          : isDark ? 'bg-slate-600' : 'bg-stone-300'
+                      }`}
+                      role="switch"
+                      aria-checked={notifSettings[key]}
+                    >
+                      <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all ${
+                        notifSettings[key] ? 'left-[1.625rem]' : 'left-0.5'
+                      }`} />
+                    </button>
+                  </div>
+                ))}
+
+                {/* Reminder time */}
+                <div className="flex items-center justify-between">
+                  <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>Reminder time</span>
+                  <input
+                    type="time"
+                    value={notifSettings.reminderTime}
+                    onChange={(e) => updateSettings({ reminderTime: e.target.value })}
+                    className={`px-2 py-1 rounded-lg text-sm border ${
+                      isDark
+                        ? 'bg-navy-lighter border-slate-600 text-white'
+                        : 'bg-white border-stone-300 text-stone-700'
+                    }`}
+                  />
+                </div>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Data */}
         <section className={`rounded-2xl p-5 border ${isDark ? 'bg-navy-light border-slate-700' : 'bg-white border-stone-200'}`}>
