@@ -36,7 +36,7 @@ export default function Home() {
         </h1>
         <p className={`text-base max-w-md mx-auto ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
           {hasHistory
-            ? 'Continue where you left off or ask a new question.'
+            ? 'Continue where you left off or explore something new.'
             : 'Get step-by-step explanations for any subject. Understand the process, not just the answer.'}
         </p>
       </div>
@@ -48,16 +48,48 @@ export default function Home() {
         </Link>
       </div>
 
+      {/* Quick action cards */}
+      <div className="grid grid-cols-2 gap-3 mb-8">
+        <Link
+          to="/practice"
+          className={`rounded-2xl p-5 text-center transition-colors ${
+            isDark ? 'bg-navy-light border border-slate-700 hover:border-slate-600' : 'bg-white border border-stone-200 hover:border-stone-300'
+          }`}
+        >
+          <div className="text-3xl mb-2">🎯</div>
+          <h3 className={`font-heading font-semibold text-sm mb-1 ${isDark ? 'text-white' : 'text-navy'}`}>
+            Practice Mode
+          </h3>
+          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+            Test yourself with AI-generated questions
+          </p>
+        </Link>
+        <Link
+          to="/formulas"
+          className={`rounded-2xl p-5 text-center transition-colors ${
+            isDark ? 'bg-navy-light border border-slate-700 hover:border-slate-600' : 'bg-white border border-stone-200 hover:border-stone-300'
+          }`}
+        >
+          <div className="text-3xl mb-2">📐</div>
+          <h3 className={`font-heading font-semibold text-sm mb-1 ${isDark ? 'text-white' : 'text-navy'}`}>
+            Formula Sheets
+          </h3>
+          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+            Quick reference for common formulas
+          </p>
+        </Link>
+      </div>
+
       {/* Recent questions */}
       {hasHistory && (
-        <div>
+        <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className={`font-heading font-semibold text-lg ${isDark ? 'text-white' : 'text-navy'}`}>
               Recent questions
             </h2>
             <Link
               to="/history"
-              className={`text-sm font-heading font-medium ${isDark ? 'text-accent' : 'text-accent'}`}
+              className="text-sm font-heading font-medium text-accent"
             >
               View all →
             </Link>

@@ -6,18 +6,19 @@ import ThemeToggle from './ThemeToggle'
 const NAV_ITEMS = [
   { to: '/', label: 'Home', icon: '🏠' },
   { to: '/ask', label: 'Ask', icon: '✨' },
-  { to: '/history', label: 'History', icon: '📚' },
-  { to: '/bookmarks', label: 'Saved', icon: '🔖' },
+  { to: '/practice', label: 'Practice', icon: '🎯' },
+  { to: '/formulas', label: 'Formulas', icon: '📐' },
+  { to: '/settings', label: 'Profile', icon: '👤' },
 ]
 
 export default function Navbar() {
   const { isDark } = useTheme()
-  const { user, isGuest } = useAuth()
+  const { user } = useAuth()
   const location = useLocation()
 
   return (
     <>
-      {/* Top bar — desktop & mobile */}
+      {/* Top bar */}
       <header
         className={`sticky top-0 z-50 backdrop-blur-lg border-b ${
           isDark
@@ -32,6 +33,29 @@ export default function Navbar() {
               EasyStudy
             </span>
           </Link>
+
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+            {NAV_ITEMS.map(({ to, label }) => {
+              const isActive = location.pathname === to
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-heading font-medium transition-colors ${
+                    isActive
+                      ? 'text-accent bg-accent/10'
+                      : isDark
+                      ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      : 'text-stone-500 hover:text-navy hover:bg-stone-100'
+                  }`}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {label}
+                </Link>
+              )
+            })}
+          </nav>
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
@@ -52,7 +76,7 @@ export default function Navbar() {
                     : 'text-stone-600 hover:text-navy hover:bg-stone-100'
                 }`}
               >
-                {isGuest ? 'Sign in' : 'Sign in'}
+                Sign in
               </Link>
             )}
           </div>
@@ -76,7 +100,7 @@ export default function Navbar() {
               <Link
                 key={to}
                 to={to}
-                className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors ${
+                className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-colors ${
                   isActive
                     ? 'text-accent'
                     : isDark

@@ -15,6 +15,9 @@ const History = lazy(() => import('./pages/History'))
 const Bookmarks = lazy(() => import('./pages/Bookmarks'))
 const Settings = lazy(() => import('./pages/Settings'))
 const Login = lazy(() => import('./pages/Login'))
+const PracticeMode = lazy(() => import('./pages/PracticeMode'))
+const FormulaSheets = lazy(() => import('./pages/FormulaSheets'))
+const SharedSolution = lazy(() => import('./pages/SharedSolution'))
 
 export default function App() {
   return (
@@ -33,6 +36,9 @@ export default function App() {
                   <Route path="/bookmarks" element={<Bookmarks />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/practice" element={<PracticeMode />} />
+                  <Route path="/formulas" element={<FormulaSheets />} />
+                  <Route path="/shared/:shareId" element={<SharedSolution />} />
                 </Routes>
               </Suspense>
             </main>

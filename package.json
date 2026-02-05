@@ -13,10 +13,14 @@
     "@anthropic-ai/sdk": "^0.72.1",
     "firebase": "^12.8.0",
     "framer-motion": "^12.31.2",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.1.0",
     "katex": "^0.16.28",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.3",
+    "tesseract.js": "^7.0.0",
+    "uuid": "^13.0.0",
     "vite-plugin-pwa": "^1.2.0"
   },
   "devDependencies": {

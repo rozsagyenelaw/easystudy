@@ -49,6 +49,7 @@ export default function SolutionPage() {
       <SolutionView
         solution={item.solution}
         questionId={item.id}
+        questionData={{ question: item.question, subject: item.subject, solution: item.solution }}
         bookmarked={item.bookmarked}
         onToggleBookmark={() => toggleBookmark(item.id)}
         expandedSteps={expandedSteps}
