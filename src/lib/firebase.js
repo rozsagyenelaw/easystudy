@@ -11,14 +11,22 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
-let app, auth, db
+let app = null
+let auth = null
+let db = null
 
-if (firebaseConfig.apiKey) {
-  app = initializeApp(firebaseConfig)
-  auth = getAuth(app)
-  db = getFirestore(app)
-} else {
-  console.warn('Firebase config missing — running in guest-only mode. Create a .env file with your Firebase credentials.')
+try {
+  if (firebaseConfig.apiKey) {
+    app = initializeApp(firebaseConfig)
+    auth = getAuth(app)
+    db = getFirestore(app)
+  } else {
+    console.warn('Firebase config missing — running in guest-only mode.')
+  }
+} catch (err) {
+  console.warn('Firebase initialization failed — running in guest-only mode:', err.message)
+  auth = null
+  db = null
 }
 
 export { auth, db }
