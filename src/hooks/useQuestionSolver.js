@@ -7,14 +7,14 @@ export function useQuestionSolver() {
   const [error, setError] = useState(null)
   const [expandedSteps, setExpandedSteps] = useState({})
 
-  const solve = useCallback(async ({ question, subject, depth }) => {
+  const solve = useCallback(async ({ question, subject, depth, mode = 'full' }) => {
     setLoading(true)
     setError(null)
     setSolution(null)
     setExpandedSteps({})
 
     try {
-      const data = await solveQuestion({ question, subject, depth })
+      const data = await solveQuestion({ question, subject, depth, mode })
       setSolution(data)
       return data
     } catch (err) {

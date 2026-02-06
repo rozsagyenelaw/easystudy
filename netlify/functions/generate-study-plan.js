@@ -141,7 +141,7 @@ Please create an optimized day-by-day study plan. Focus more time on weaker area
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5-20250929',
+        model: 'claude-opus-4-6',
         max_tokens: 4096,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userMessage }],

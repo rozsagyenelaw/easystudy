@@ -1,10 +1,10 @@
 const API_BASE = '/.netlify/functions'
 
-export async function solveQuestion({ question, subject, depth = 'standard', followUpStepIndex }) {
+export async function solveQuestion({ question, subject, depth = 'standard', followUpStepIndex, mode = 'full' }) {
   const response = await fetch(`${API_BASE}/solve-question`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question, subject, depth, followUpStepIndex }),
+    body: JSON.stringify({ question, subject, depth, followUpStepIndex, mode }),
   })
 
   if (response.status === 429) {

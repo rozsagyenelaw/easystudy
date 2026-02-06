@@ -84,6 +84,21 @@ const DEPTH_INSTRUCTIONS = {
   deep: 'Give a very detailed explanation. Include background concepts, why each step works, common mistakes, and connections to related topics.',
 }
 
+const QUICK_ANSWER_SYSTEM = `You are an expert tutor. A student needs a direct answer to their question. You MUST return valid JSON (no markdown code fences, no extra text — only the JSON object).
+
+Return this exact JSON structure:
+{
+  "subject_detected": "the subject area",
+  "topic": "specific topic within subject",
+  "final_answer": "The complete answer, clearly stated. Use $...$ for inline LaTeX and $$...$$ for display LaTeX.",
+  "difficulty": "easy|medium|hard"
+}
+
+Rules:
+- Give the answer directly — no step-by-step breakdown.
+- Use LaTeX notation for all mathematical expressions.
+- The answer should be clear and complete, but concise.`
+
 const FOLLOW_UP_SYSTEM = `You are an expert tutor. A student wants a deeper explanation of a specific step in a solution. Explain it more thoroughly with additional detail, sub-steps, and intuition. Return valid JSON (no markdown fences):
 {
   "detailed_explanation": "A much more detailed explanation of this step",
@@ -125,20 +140,23 @@ export const handler = async (event) => {
     return jsonResponse(400, { error: 'Invalid JSON body' })
   }
 
-  const { question, subject, depth = 'standard', followUpStepIndex } = body
+  const { question, subject, depth = 'standard', followUpStepIndex, mode = 'full' } = body
 
   if (!question || typeof question !== 'string' || question.trim().length === 0) {
     return jsonResponse(400, { error: 'Question is required' })
   }
 
   const isFollowUp = followUpStepIndex !== undefined && followUpStepIndex !== null
+  const isQuick = mode === 'quick' && !isFollowUp
 
-  const systemPrompt = isFollowUp ? FOLLOW_UP_SYSTEM : SYSTEM_PROMPT
+  const systemPrompt = isFollowUp ? FOLLOW_UP_SYSTEM : isQuick ? QUICK_ANSWER_SYSTEM : SYSTEM_PROMPT
   const depthNote = DEPTH_INSTRUCTIONS[depth] || DEPTH_INSTRUCTIONS.standard
 
   let userMessage
   if (isFollowUp) {
     userMessage = `The original question was: "${question}"\n\nPlease explain step ${followUpStepIndex + 1} in much more detail.`
+  } else if (isQuick) {
+    userMessage = `Subject: ${subject || 'Auto-detect'}\n\nQuestion: ${question}`
   } else {
     userMessage = `Subject: ${subject || 'Auto-detect'}\nDepth: ${depthNote}\n\nQuestion: ${question}`
   }
@@ -152,8 +170,8 @@ export const handler = async (event) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5-20250929',
-        max_tokens: 4096,
+        model: 'claude-opus-4-6',
+        max_tokens: isQuick ? 1024 : 4096,
         system: systemPrompt,
         messages: [{ role: 'user', content: userMessage }],
       }),
@@ -182,6 +200,7 @@ export const handler = async (event) => {
       return jsonResponse(502, { error: 'Could not parse AI response. Try rephrasing your question.' })
     }
 
+    parsed._mode = isQuick ? 'quick' : 'full'
     return jsonResponse(200, parsed)
   } catch (err) {
     console.error('Function error:', err)

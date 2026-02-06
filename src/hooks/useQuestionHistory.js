@@ -62,6 +62,7 @@ export function useQuestionHistory() {
       subject: questionData.subject,
       solution: questionData.solution,
       difficulty: questionData.solution?.difficulty || 'medium',
+      mode: questionData.mode || 'full',
       bookmarked: false,
       timestamp: new Date().toISOString(),
     }

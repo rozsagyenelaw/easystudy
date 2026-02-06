@@ -24,11 +24,72 @@ export default function SolutionView({
 
   if (!solution) return null
 
+  const isQuick = solution._mode === 'quick' || (!solution.steps?.length && solution.final_answer)
+
   const steps = solution.steps || []
   const totalSteps = steps.length
   const visibleSteps = steps.slice(0, revealedCount)
   const hasMore = revealedCount < totalSteps
   const allRevealed = revealedCount >= totalSteps
+
+  if (isQuick) {
+    return (
+      <div className="space-y-5">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <span className={`px-2.5 py-0.5 rounded-full text-xs font-heading font-medium ${
+              isDark ? 'bg-accent/20 text-accent' : 'bg-blue-50 text-accent'
+            }`}>
+              {solution.subject_detected}
+            </span>
+            <span className={`px-2.5 py-0.5 rounded-full text-xs font-heading font-medium ${
+              isDark ? 'bg-slate-700 text-slate-300' : 'bg-stone-100 text-stone-500'
+            }`}>
+              {solution.topic}
+            </span>
+            <span className={`px-2.5 py-0.5 rounded-full text-xs font-heading font-medium ${
+              isDark ? 'bg-amber-500/20 text-amber-400' : 'bg-amber-50 text-amber-600'
+            }`}>
+              Quick Answer
+            </span>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <BookmarkButton bookmarked={bookmarked} onToggle={onToggleBookmark} />
+            {questionData && <ShareButton questionData={questionData} />}
+            <ExportPDFButton elementId="solution-export" filename={`easystudy-${questionId}`} />
+          </div>
+        </div>
+
+        {/* Quick answer content */}
+        <div id="solution-export">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`rounded-2xl p-6 border-2 ${
+              isDark
+                ? 'bg-emerald/5 border-emerald/30'
+                : 'bg-emerald-50 border-emerald/20'
+            }`}
+          >
+            <p className={`text-xs font-heading font-bold uppercase tracking-wider mb-2 ${
+              isDark ? 'text-emerald' : 'text-emerald-600'
+            }`}>
+              Answer
+            </p>
+            <div className={`text-lg font-body ${isDark ? 'text-white' : 'text-navy'}`}>
+              <MathRenderer text={solution.final_answer} />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Feedback */}
+        <div className={`pt-4 border-t ${isDark ? 'border-slate-700' : 'border-stone-200'}`}>
+          <FeedbackButton questionId={questionId} />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-5">

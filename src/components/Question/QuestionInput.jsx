@@ -7,6 +7,11 @@ import VoiceInput from './VoiceInput'
 
 const MAX_CHARS = 2000
 
+const MODE_OPTIONS = [
+  { value: 'quick', label: 'Quick Answer', desc: 'Just the answer' },
+  { value: 'full', label: 'Full Explanation', desc: 'Step-by-step' },
+]
+
 const DEPTH_OPTIONS = [
   { value: 'basic', label: 'Basic', desc: 'Quick overview' },
   { value: 'standard', label: 'Standard', desc: 'Clear steps' },
@@ -24,6 +29,9 @@ export default function QuestionInput({ onSubmit, loading }) {
   const [inputMode, setInputMode] = useState('type')
   const [question, setQuestion] = useState('')
   const [subject, setSubject] = useState(null)
+  const [mode, setMode] = useState(
+    () => localStorage.getItem('easystudy-answer-mode') || 'full'
+  )
   const [depth, setDepth] = useState(
     () => localStorage.getItem('easystudy-default-depth') || 'standard'
   )
@@ -46,6 +54,11 @@ export default function QuestionInput({ onSubmit, loading }) {
     if (detected) setSubject(detected)
   }
 
+  const handleModeChange = (newMode) => {
+    setMode(newMode)
+    localStorage.setItem('easystudy-answer-mode', newMode)
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     const trimmed = question.trim()
@@ -58,7 +71,7 @@ export default function QuestionInput({ onSubmit, loading }) {
       return
     }
     setError('')
-    onSubmit({ question: trimmed, subject: subject || 'Other', depth })
+    onSubmit({ question: trimmed, subject: subject || 'Other', depth, mode })
   }
 
   return (
@@ -141,19 +154,19 @@ export default function QuestionInput({ onSubmit, loading }) {
         <SubjectSelector selected={subject} onSelect={setSubject} />
       </div>
 
-      {/* Depth toggle */}
+      {/* Answer mode toggle */}
       <div>
         <label className={`block text-sm font-heading font-medium mb-2 ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>
-          Explanation depth
+          Answer mode
         </label>
         <div className={`inline-flex rounded-xl p-1 ${isDark ? 'bg-navy-lighter' : 'bg-stone-100'}`}>
-          {DEPTH_OPTIONS.map(({ value, label, desc }) => (
+          {MODE_OPTIONS.map(({ value, label, desc }) => (
             <button
               key={value}
               type="button"
-              onClick={() => setDepth(value)}
+              onClick={() => handleModeChange(value)}
               className={`px-4 py-2 rounded-lg text-sm font-heading font-medium transition-all duration-200 ${
-                depth === value
+                mode === value
                   ? 'bg-accent text-white shadow-sm'
                   : isDark
                   ? 'text-slate-400 hover:text-slate-200'
@@ -166,6 +179,34 @@ export default function QuestionInput({ onSubmit, loading }) {
           ))}
         </div>
       </div>
+
+      {/* Depth toggle (hidden in quick mode) */}
+      {mode === 'full' && (
+        <div>
+          <label className={`block text-sm font-heading font-medium mb-2 ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>
+            Explanation depth
+          </label>
+          <div className={`inline-flex rounded-xl p-1 ${isDark ? 'bg-navy-lighter' : 'bg-stone-100'}`}>
+            {DEPTH_OPTIONS.map(({ value, label, desc }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setDepth(value)}
+                className={`px-4 py-2 rounded-lg text-sm font-heading font-medium transition-all duration-200 ${
+                  depth === value
+                    ? 'bg-accent text-white shadow-sm'
+                    : isDark
+                    ? 'text-slate-400 hover:text-slate-200'
+                    : 'text-stone-500 hover:text-stone-700'
+                }`}
+                title={desc}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Submit */}
       <button

@@ -26,10 +26,10 @@ export default function AskQuestion() {
   const { recordActivity, streaks } = useStreaks()
   const { checkAchievements } = useAchievements()
 
-  const handleSubmit = async ({ question, subject, depth }) => {
-    const solution = await solve({ question, subject, depth })
+  const handleSubmit = async ({ question, subject, depth, mode }) => {
+    const solution = await solve({ question, subject, depth, mode })
     if (solution) {
-      const id = await addQuestion({ question, subject, solution })
+      const id = await addQuestion({ question, subject, solution, mode: mode || 'full' })
 
       // Track progress
       const detectedSubject = solution.subject_detected || subject || 'General'
